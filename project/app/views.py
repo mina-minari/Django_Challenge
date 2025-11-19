@@ -13,13 +13,8 @@ from .serializers import UserProfileSerializer, MyChallengeSerializer
 
 
 def get_current_user(request):
-    """
-    로그인되어 있으면 request.user,
-    아니면 개발용으로 username='username2' 유저를 fallback으로 사용.
-    """
-    if request.user.is_authenticated:
-        return request.user
-    return User.objects.get(username="username2")
+    # 현재는 username1 기준으로 확인할 수 있게 함
+    return User.objects.get(username="username1")
 
 
 def get_user_profile(user: User) -> UserProfile:
@@ -28,10 +23,7 @@ def get_user_profile(user: User) -> UserProfile:
 
 
 def get_user_challenges(user: User):
-    """
-    Challenge.members(M2M) 기준으로
-    이 유저가 참여 중인 챌린지 조회
-    """
+    # Challenge.members(M2M) 기준으로 유저가 참여 중인 챌린지 조회
     return Challenge.objects.filter(members=user).distinct()
 
 
@@ -105,10 +97,6 @@ def my_challenges_api(request):
 
 
 def challenge_list(request):
-    """
-    생성된 챌린지 전체 목록 보기 (READ)
-    기존 main 브랜치에 있던 코드 유지
-    """
     challenges = Challenge.objects.all().order_by("-created_at")
     return render(
         request,

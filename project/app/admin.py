@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile, Challenge, ChallengeParticipant, Verification
+from .models import UserProfile, Challenge, Verification
 
 
 @admin.register(UserProfile)
@@ -9,18 +9,46 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
-    list_display = ("id", "title", "master", "max_participants", "is_group", "created_at")
-    list_filter = ("is_group", "created_at")
-    search_fields = ("title", "content")
-
-
-@admin.register(ChallengeParticipant)
-class ChallengeParticipantAdmin(admin.ModelAdmin):
-    list_display = ("id", "challenge", "user", "joined_at")
-    list_filter = ("challenge", "user")
+    list_display = (
+        "id",
+        "title",
+        "leader",        # 방장
+        "max_member",    # 최대 인원
+        "type",          # personal / group
+        "category",
+        "is_public",
+        "current_member",
+        "count",
+        "created_at",
+    )
+    list_filter = (
+        "type",
+        "category",
+        "is_public",
+        "created_at",
+    )
+    search_fields = (
+        "title",
+        "content",
+        "leader__username",
+    )
 
 
 @admin.register(Verification)
 class VerificationAdmin(admin.ModelAdmin):
-    list_display = ("id", "user", "challenge", "date", "image")
-    list_filter = ("date", "challenge", "user")
+    list_display = (
+        "id",
+        "verified_member",   # 인증한 사람
+        "challenge",
+        "date",
+        "image",
+    )
+    list_filter = (
+        "date",
+        "challenge",
+        "verified_member",
+    )
+    search_fields = (
+        "verified_member__username",
+        "challenge__title",
+    )

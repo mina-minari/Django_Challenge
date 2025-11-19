@@ -22,7 +22,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_participating_count(self, obj):
         user = obj.user
-        return user.joined_challenges.count()
+        # Challenge.members(M2M) 기준으로 참여 중인 챌린지 수
+        return user.joined_challenges.distinct().count()
 
 
 class MyChallengeSerializer(serializers.ModelSerializer):
@@ -36,36 +37,34 @@ class MyChallengeSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "content",
-            "max_participants",
-            "is_group",
-            "created_at",
+            "max_member",        # 정원
+            "type",              # personal / group
+            "category",
+            "is_public",
+            "challenge_date",
             "participants_count",
             "progress",
             "is_full",
         )
 
     def _get_capacity_and_count(self, obj):
-        if obj.is_group:
-            capacity = obj.max_participants
-            participants_count = obj.participants.count()
-        else:
-            # 1인 챌린지: 방장 혼자 진행 -> 항상 1/1
-            capacity = 1
-            participants_count = 1
+        # 정원과 현재 인원 계산 (members M2M 기반)
+        capacity = obj.max_member or 0
+        participants_count = obj.members.count()
         return capacity, participants_count
 
     def get_participants_count(self, obj):
-        capacity, participants_count = self._get_capacity_and_count(obj)
+        _, participants_count = self._get_capacity_and_count(obj)
         return participants_count
 
     def get_progress(self, obj):
         # progress = 현재 인원 / 정원 * 100
         capacity, participants_count = self._get_capacity_and_count(obj)
-        if capacity > 0:
-            p = int(participants_count / capacity * 100)
-            return min(p, 100)
-        return 0
+        if capacity <= 0:
+            return 0
+        p = int(participants_count / capacity * 100)
+        return min(p, 100)
 
     def get_is_full(self, obj):
         capacity, participants_count = self._get_capacity_and_count(obj)
-        return participants_count >= capacity
+        return capacity > 0 and participants_count >= capacity
