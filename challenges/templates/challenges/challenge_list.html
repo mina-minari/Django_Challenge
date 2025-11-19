@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto; padding: 20px;">
+    <h2>현재 모집 중인 챌린지</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+        
+        {% for challenge in challenges %}
+        <div style="border: 1px solid #ddd; border-radius: 15px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            
+            <span style="background-color: #e3f2fd; color: #1565c0; padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">
+                {{ challenge.get_category_display }}
+            </span>
+
+            <h3 style="margin: 10px 0;">{{ challenge.title }}</h3>
+
+            <p style="color: #666; font-size: 0.9rem;">
+                {{ challenge.content|truncatechars:50 }}
+            </p>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+
+            <div style="font-size: 0.85rem; color: #555;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <span>👑 방장: <strong>{{ challenge.created_by.username }}</strong></span>
+                    <span style="color: #d32f2f;">👥 {{ challenge.participants.count }} / {{ challenge.max_members }}명</span>
+                </div>
+                <div>
+                    <span>📅 {{ challenge.start_date }} ~ {{ challenge.end_date }}</span>
+                </div>
+            </div>
+
+        </div>
+        {% empty %}
+        <p>아직 등록된 챌린지가 없어요! 관리자 페이지에서 추가해보세요.</p>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
