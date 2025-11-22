@@ -5,6 +5,8 @@ import json
 import requests
 from .models import User
 from django.db import IntegrityError
+from django.contrib.auth import login,logout
+
 user=User()
 google_user_info_url='https://www.googleapis.com/oauth2/v3/userinfo'
 try:
@@ -46,7 +48,7 @@ def google_callback(request):
     try:
         token_response=requests.post(token_uri, data=token_data)
         token_response.raise_for_status()#HTTP 상태 코드 확인 400~500대면 예외 발생
-        access_token=token_response.json.get('access_token')
+        access_token=token_response.json().get('access_token')
     except requests.exceptions.RequestException as e:
         return HttpResponse(f"토큰 요청 중 오류가 발생했습니다: {e}", status=500)
     
@@ -61,7 +63,7 @@ def google_callback(request):
         return HttpResponse(f"사용자 정보 요청 중 오류가 발생했습니다: {e}", status=500)
     profile_image=user_info.get('picture')
     email=user_info.get('email')
-    name=user_info.get('name',user_email)#name이 없거나 none이면 email로 대체
+    name=user_info.get('name',email)#name이 없거나 none이면 email로 대체
     try:
         user, created =User.objects.get_or_create(
             username=email,
@@ -70,4 +72,7 @@ def google_callback(request):
     except IntegrityError:
         return HttpResponse("데이터베이스 오류가 발생했습니다.", status=500)
     login(request,user)
+    return redirect('/')
+def user_logout(request):
+    logout(request)
     return redirect('/')
