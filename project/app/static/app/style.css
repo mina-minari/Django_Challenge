@@ -130,3 +130,81 @@ body {
   border-radius: inherit;
   background: #5a6bff;
 }
+
+/* Upload History 전용 */
+
+.upload-history-grid {
+  padding-bottom: 40px;
+}
+
+/* 전체 그리드 컨테이너: 3 x N */
+.upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));  /* 항상 3열 */
+  gap: 12px;
+}
+
+/* 각 칸 (카드) */
+.upload-grid-item {
+  position: relative;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* 이미지 */
+.upload-grid-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+
+/* 아래 캡션: 호버 시만 살짝 보이게 */
+.upload-grid-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6px 8px;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6),
+    rgba(0, 0, 0, 0.0)
+  );
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity 0.18s ease-out;
+}
+
+.upload-grid-item:hover .upload-grid-caption {
+  opacity: 1;
+}
+
+.upload-grid-title {
+  font-weight: 500;
+  max-width: 70%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.upload-grid-date {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* 화면 좁을 때는 2열 */
+@media (max-width: 640px) {
+  .layout {
+    padding: 16px;
+  }
+  .upload-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

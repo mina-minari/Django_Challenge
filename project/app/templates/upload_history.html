@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>Upload History</title>
@@ -15,26 +15,23 @@
       </a>
     </header>
 
-    <section class="upload-history-list">
+    <section class="upload-history-grid">
       {% if verifications %}
-        {% for v in verifications %}
-          <div class="upload-card">
-            <div class="upload-header">
-              <div class="challenge-title">
-                {{ v.challenge.title }}
-              </div>
-              <div class="upload-date">
-                {{ v.date|date:"Y-m-d H:i" }}
-              </div>
-            </div>
-
-            {% if v.image %}
-              <div class="upload-image-wrapper">
-                <img src="{{ v.image.url }}" alt="verification image" class="upload-image">
-              </div>
-            {% endif %}
-          </div>
-        {% endfor %}
+        <div class="upload-grid">
+          {% for v in verifications %}
+            <figure class="upload-grid-item">
+              {% if v.image %}
+                <img src="{{ v.image.url }}" alt="verification image" class="upload-grid-image">
+              {% endif %}
+              <figcaption class="upload-grid-caption">
+                <div class="upload-grid-title">{{ v.challenge.title }}</div>
+                <div class="upload-grid-date">
+                  {{ v.date|date:"Y.m.d" }}
+                </div>
+              </figcaption>
+            </figure>
+          {% endfor %}
+        </div>
       {% else %}
         <p>No verification uploads yet.</p>
       {% endif %}
