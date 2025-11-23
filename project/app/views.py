@@ -103,3 +103,18 @@ def challenge_list(request):
         "challenge/challenge_list.html",
         {"challenges": challenges},
     )
+
+def upload_history(request):
+    user = get_current_user(request)  # 임시로 username1 고정
+
+    verifications = (
+        Verification.objects
+        .filter(verified_member=user)
+        .select_related("challenge")
+        .order_by("-date")
+    )
+
+    context = {
+        "verifications": verifications,
+    }
+    return render(request, "upload_history.html", context)
