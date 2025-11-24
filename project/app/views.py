@@ -6,6 +6,7 @@ import requests
 from .models import User
 from django.db import IntegrityError
 from django.contrib.auth import login,logout
+from .forms import NicknameForm
 
 user=User()
 google_user_info_url='https://www.googleapis.com/oauth2/v3/userinfo'
@@ -23,7 +24,9 @@ except json.JSONDecodeError:
     raise Exception("보안 파일의 JSON 형식이 올바르지 않습니다.")
 
 def index(request):
-    return render(request, 'app/login.html')
+    if request.user.is_authenticated:
+        return render(request, 'app/home.html')
+    return render(request,'app/login.html')
 
 def google_login(request):
     params={
@@ -65,14 +68,36 @@ def google_callback(request):
     email=user_info.get('email')
     name=user_info.get('name',email)#name이 없거나 none이면 email로 대체
     try:
-        user, created =User.objects.get_or_create(
-            username=email,
-            defaults={'name': name, 'profile_image': profile_image}
-        )#사용자가 이름이나 프사를 바꿔도 업데이트 안됨
+        user=User.objects.get(username=email)#사용자가 이름이나 프사를 바꿔도 업데이트 안됨
+    except User.DoesNotExist:
+        return redirect(f"/nickname/?name={name}&email={email}&profile_image={profile_image}")
     except IntegrityError:
         return HttpResponse("데이터베이스 오류가 발생했습니다.", status=500)
     login(request,user)
     return redirect('/')
+
+def nickname_form(request):
+    if request.method == "POST":
+        nickname=request.POST.get('nickname')
+        name = request.GET.get('name')
+        email = request.GET.get('email')
+        profile_image = request.GET.get('profile_image')
+        try:
+            user=User.objects.create_user(
+                username=email,
+                password=None,
+                nickname=nickname,
+                name=name,
+                profile_image=profile_image
+            )
+        except IntegrityError:
+            return HttpResponse("닉네임이 이미 사용 중입니다. 다른 닉네임을 선택해주세요.", status=400)
+        login(request,user)
+        return redirect('/')
+    else:
+        form=NicknameForm()
+        return render(request, 'app/nickname.html', {'form': form})
+
 def user_logout(request):
     logout(request)
     return redirect('/')
