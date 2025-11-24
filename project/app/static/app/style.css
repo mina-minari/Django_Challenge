@@ -208,3 +208,126 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* 공통 링크 */
+.back-link {
+  font-size: 14px;
+  text-decoration: none;
+  color: #555;
+}
+
+/* Edit Profile 전용 레이아웃 */
+.edit-profile-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+/* 폼 카드 */
+.edit-profile-card {
+  width: 420px;
+  background: #f5f6fd;
+  border-radius: 16px;
+  padding: 20px 24px 18px;
+  box-sizing: border-box;
+  border: 1px solid #e0e4f5;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+}
+
+/* 폼 그룹 */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* 인풋/텍스트에어리어 공통 스타일 */
+.form-input,
+.form-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid #d1d6ee;
+  padding: 8px 10px;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: #5a6bff;
+  box-shadow: 0 0 0 1px rgba(90, 107, 255, 0.25);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-help {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #9aa0ba;
+}
+
+/* 에러 메시지 */
+.field-error {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #d9534f;
+}
+
+.form-errors {
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #ffe5e5;
+  color: #b3261e;
+  font-size: 13px;
+}
+
+/* 버튼 영역 */
+.form-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primary-button {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #5a6bff;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.primary-button:hover {
+  opacity: 0.92;
+}
+
+.secondary-button {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #c5cae9;
+  background: #fff;
+  color: #555;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.secondary-button:hover {
+  background: #eef0fb;
+}

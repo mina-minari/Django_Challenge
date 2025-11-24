@@ -1,10 +1,79 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>Edit Profile</title>
+  <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 <body>
-  <h1>Edit Profile</h1>
+  <div class="layout">
+    <header class="page-header">
+      <h1 class="page-title">Edit Profile</h1>
+      <a href="{% url 'mypage' %}" class="back-link">
+        &lt; Back to My Page
+      </a>
+    </header>
+
+
+    <section class="profile-section">
+      <div class="profile-avatar"></div>
+      <div class="profile-text">
+        <div class="name">프로필 정보를 수정하세요.</div>
+        <div class="meta">
+          Username, 이미지, 자기소개를 변경할 수 있습니다.
+        </div>
+      </div>
+    </section>
+
+
+    <section class="edit-profile-wrapper">
+      <form method="post" class="edit-profile-card">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="form-errors">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+          {{ form.username }}
+          {% if form.username.errors %}
+            <div class="field-error">
+              {{ form.username.errors }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.profile_image.id_for_label }}">Profile Image</label>
+          {{ form.profile_image }}
+          <p class="form-help">이미지 URL 또는 파일 경로를 입력하세요.</p>
+          {% if form.profile_image.errors %}
+            <div class="field-error">
+              {{ form.profile_image.errors }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="{{ form.bio.id_for_label }}">Bio</label>
+          {{ form.bio }}
+          {% if form.bio.errors %}
+            <div class="field-error">
+              {{ form.bio.errors }}
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="form-actions">
+          <a href="{% url 'mypage' %}" class="secondary-button">Cancel</a>
+          <button type="submit" class="primary-button">Save</button>
+        </div>
+      </form>
+    </section>
+  </div>
 </body>
 </html>

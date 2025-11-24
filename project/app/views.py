@@ -9,7 +9,11 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .models import Challenge, Verification, UserProfile
-from .serializers import UserProfileSerializer, MyChallengeSerializer
+from .serializers import UserProfileSerializer, MyChallengeSerializer, VerificationSerializer
+
+from rest_framework import status
+
+from .forms import ProfileForm
 
 
 def get_current_user(request):
@@ -57,8 +61,23 @@ def my_challenges(request):
 
 
 def edit_profile(request):
-    return render(request, "edit_profile.html")
+    user = get_current_user(request)  # 나중에 request.user로 교체
+    profile = get_user_profile(user)
 
+    if request.method == "POST":
+        form = ProfileForm(request.POST, user=user, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "프로필이 수정되었습니다.")
+            return redirect("mypage")
+    else:
+        # GET 요청: 기존 값으로 채워진 폼 보여주기
+        form = ProfileForm(user=user, instance=profile)
+
+    context = {
+        "form": form,
+    }
+    return render(request, "edit_profile.html", context)
 
 def upload_history(request):
     return render(request, "upload_history.html")
@@ -118,3 +137,43 @@ def upload_history(request):
         "verifications": verifications,
     }
     return render(request, "upload_history.html", context)
+
+@api_view(["GET"])
+def upload_history_api(request):
+    user = get_current_user(request)
+
+    verifications = (
+        Verification.objects
+        .filter(verified_member=user)
+        .select_related("challenge")
+        .order_by("-date")
+    )
+
+    serializer = VerificationSerializer(verifications, many=True)
+    data = {
+        "verifications": serializer.data,
+    }
+    return Response(data, status=status.HTTP_200_OK)
+
+
+
+@api_view(["GET", "PUT", "PATCH"])
+def profile_api(request):
+    user = get_current_user(request)   # 나중에는 request.user
+    profile = get_user_profile(user)
+
+    if request.method == "GET":
+        serializer = UserProfileSerializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # PUT / PATCH 공통 처리
+    partial = (request.method == "PATCH")  # PATCH면 부분 수정 허용
+    serializer = UserProfileSerializer(
+        profile,
+        data=request.data,
+        partial=partial,
+    )
+    if serializer.is_valid():
+        serializer.save()  # 여기서 update() 호출됨 -> User + UserProfile 둘 다 저장
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
