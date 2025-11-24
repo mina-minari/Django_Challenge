@@ -18,7 +18,7 @@ from .forms import ProfileForm
 
 def get_current_user(request):
     # 현재는 username1 기준으로 확인할 수 있게 함
-    return User.objects.get(username="username1")
+    return User.objects.get(username="soyeon-kk")
 
 
 def get_user_profile(user: User) -> UserProfile:
@@ -33,8 +33,8 @@ def get_user_challenges(user: User):
 
 def mypage(request):
     user = get_current_user(request)
-    profile = get_user_profile(user)
-    profile_data = UserProfileSerializer(profile).data
+    profile = get_user_profile(user)  
+    participating_count = user.joined_challenges.count()
 
     menu_items = [
         {"name": "My Challenges", "url_name": "my_challenges"},
@@ -45,10 +45,12 @@ def mypage(request):
     ]
 
     context = {
-        "profile": profile_data,
+        "profile": profile,     
+        "participating_count": participating_count,
         "menu_items": menu_items,
     }
     return render(request, "mypage.html", context)
+
 
 
 def my_challenges(request):
@@ -65,7 +67,7 @@ def edit_profile(request):
     profile = get_user_profile(user)
 
     if request.method == "POST":
-        form = ProfileForm(request.POST, user=user, instance=profile)
+        form = ProfileForm(request.POST, request.FILES, user=user, instance=profile)
         if form.is_valid():
             form.save()
             messages.success(request, "프로필이 수정되었습니다.")
@@ -76,8 +78,10 @@ def edit_profile(request):
 
     context = {
         "form": form,
+        "profile": profile,
     }
     return render(request, "edit_profile.html", context)
+
 
 def upload_history(request):
     return render(request, "upload_history.html")

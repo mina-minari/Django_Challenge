@@ -1,6 +1,12 @@
 # app/forms.py
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import ClearableFileInput
+from .models import UserProfile
+
+
+from django import forms
+from django.contrib.auth.models import User
 from .models import UserProfile
 
 
@@ -17,14 +23,19 @@ class ProfileForm(forms.ModelForm):
         ),
     )
 
+    # 프로필 이미지 삭제 여부 체크박스 (모델 필드 X, 폼용 필드)
+    remove_profile_image = forms.BooleanField(
+        required=False,
+        label="현재 프로필 이미지 삭제",
+    )
+
     class Meta:
         model = UserProfile
-        fields = ("profile_image", "bio")
+        fields = ("profile_image", "bio")  # 모델 필드만 적어두면 됨
         widgets = {
-            "profile_image": forms.TextInput(
+            "profile_image": forms.FileInput(
                 attrs={
                     "class": "form-input",
-                    "placeholder": "프로필 이미지 URL 또는 경로",
                 }
             ),
             "bio": forms.Textarea(
@@ -44,11 +55,15 @@ class ProfileForm(forms.ModelForm):
         self.fields["username"].initial = user.username
 
     def save(self, commit=True):
-        # UserProfile(프로필) 먼저 저장 준비
         profile = super().save(commit=False)
 
         # User.username 업데이트
         self.user.username = self.cleaned_data["username"]
+
+        # 삭제 체크되어 있으면 이미지 필드 비우기
+        if self.cleaned_data.get("remove_profile_image"):
+            # DB 필드만 비우는 버전 (파일까지 지우려면 delete(save=False) 쓰면 됨)
+            profile.profile_image = None
 
         if commit:
             self.user.save()

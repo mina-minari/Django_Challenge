@@ -3,29 +3,6 @@ from django.contrib.auth.models import User
 from .models import UserProfile, Challenge, Verification
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    # User 모델에서 username 끌어오기 (UserProfile에는 username 필드가 없음)
-    username = serializers.CharField(source="user.username", read_only=True)
-
-    # 모델 필드가 아니라, 계산해서 넣어주는 값
-    participating_count = serializers.SerializerMethodField()
-
-    class Meta:
-        model = UserProfile
-        fields = (
-            "id",
-            "username",
-            "profile_image",
-            "bio",
-            "participating_count",
-        )
-
-    def get_participating_count(self, obj):
-        user = obj.user
-        # Challenge.members(M2M) 기준으로 참여 중인 챌린지 수
-        return user.joined_challenges.distinct().count()
-
-
 class MyChallengeSerializer(serializers.ModelSerializer):
     participants_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()

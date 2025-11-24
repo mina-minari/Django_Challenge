@@ -15,9 +15,14 @@
       </a>
     </header>
 
-
     <section class="profile-section">
-      <div class="profile-avatar"></div>
+      <div class="profile-avatar">
+        {% if profile.profile_image %}
+          <img src="{{ profile.profile_image.url }}" alt="프로필 이미지">
+        {% else %}
+          <img src="{% static 'app/default-profile.png' %}" alt="기본 프로필 이미지">
+        {% endif %}
+      </div>
       <div class="profile-text">
         <div class="name">프로필 정보를 수정하세요.</div>
         <div class="meta">
@@ -26,9 +31,8 @@
       </div>
     </section>
 
-
     <section class="edit-profile-wrapper">
-      <form method="post" class="edit-profile-card">
+      <form method="post" enctype="multipart/form-data" class="edit-profile-card">
         {% csrf_token %}
 
         {% if form.non_field_errors %}
@@ -50,13 +54,20 @@
         <div class="form-group">
           <label class="form-label" for="{{ form.profile_image.id_for_label }}">Profile Image</label>
           {{ form.profile_image }}
-          <p class="form-help">이미지 URL 또는 파일 경로를 입력하세요.</p>
+          <p class="form-help">프로필 이미지 파일을 업로드하세요.</p>
+
+          <label class="form-checkbox">
+            {{ form.remove_profile_image }}
+            <span>현재 프로필 이미지를 삭제합니다.</span>
+          </label>
+
           {% if form.profile_image.errors %}
             <div class="field-error">
               {{ form.profile_image.errors }}
             </div>
           {% endif %}
         </div>
+
 
         <div class="form-group">
           <label class="form-label" for="{{ form.bio.id_for_label }}">Bio</label>
