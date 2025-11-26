@@ -22,7 +22,7 @@ class Challenge(models.Model):
     ]
 
     title = models.CharField("챌린지", max_length=100)
-    content = models.CharField("설명")
+    content = models.CharField("설명", max_length=100)
     current_member = models.PositiveIntegerField("현재 인원", default=1)
     max_member = models.PositiveIntegerField("최대 인원")
     
@@ -30,7 +30,7 @@ class Challenge(models.Model):
         User,
         verbose_name = "챌린지 장",
         on_delete = models.CASCADE,
-        related_name ='leading_challenge',
+        related_name ='leading_challenge', 
     )
 
     # 챌린지 참여자들 (방장도 포함)
@@ -47,7 +47,7 @@ class Challenge(models.Model):
     type = models.CharField(
         "챌린지 종류(인원)",
         max_length = 20,
-        chocies = CHALLENGE_TYPE_CHOICES,
+        choices = CHALLENGE_TYPE_CHOICES,
     )
 
     created_at = models.DateTimeField("생성일", auto_now_add = True)
@@ -92,4 +92,4 @@ class Verification(models.Model):
         ordering = ['-date']
 
     def __str__(self):
-        return f"{self.member.username} - {self.challenge.title} ({self.date.date()})"
+        return f"{self.verified_member.username} - {self.challenge.title} ({self.date.date()})"

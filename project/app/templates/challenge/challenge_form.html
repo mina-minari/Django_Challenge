@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+  <h3 class="mb-3">🆕 새 챌린지 만들기</h3>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+      <label class="form-label">챌린지 이름</label>
+      {{ form.title }}
+      {{ form.title.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">설명</label>
+      {{ form.content }}
+      {{ form.content.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">최대 인원</label>
+      {{ form.max_member }}
+      {{ form.max_member.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">목표 인증 횟수</label>
+      {{ form.count }}
+      {{ form.count.errors }}
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">챌린지 종류</label>
+      {{ form.type }}
+      {{ form.type.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">생성하기</button>
+    <a href="{% url 'challenge_list' %}" class="btn btn-secondary ms-2">취소</a>
+  </form>
+</div>
+{% endblock %}
