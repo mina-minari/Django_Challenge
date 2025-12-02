@@ -1,7 +1,9 @@
 from django.contrib import admin
-<<<<<<< HEAD
-from django.urls import path
+from django.urls import path,include
 from app import views
+from django.conf.urls.static import static
+from django.conf import settings
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("",views.index, name="index"),
@@ -9,12 +11,7 @@ urlpatterns = [
     path("challenge_list/",views.google_callback, name="google_callback"),
     path("logout/",views.user_logout, name="user_logout"),
     path("nickname/",views.nickname_form, name="nickname_form"),
+    path("challenge/",include('app.urls')),
 ]
-=======
-from django.urls import path, include
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("", include("app.urls")),
-]
->>>>>>> main
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
