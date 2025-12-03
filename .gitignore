@@ -1,23 +1,19 @@
-# 1. 가상 환경 (Virtual Environment)
-# - 파이썬 프로젝트에서 가장 중요한 무시 대상
-# - 프로젝트 폴더명이 'venv'가 아니라면 그 이름으로 변경해주세요.
+secret.json
 venv/
-.env
-
-# 2. 파이썬 컴파일 파일 (자동 생성 파일)
-# - 실행 속도를 위해 파이썬이 만드는 임시 파일
+env/
 __pycache__/
 *.pyc
-*.pyo
-
-# 3. 데이터베이스 및 미디어 파일
-# - 보안상 깃허브에 올리면 안 되는 파일
+.DS_Store
+.idea/
+.vscode/
 db.sqlite3
-/media/
-
-# 4. Django/운영체제 관련
-# - Django가 세션 관리를 위해 만드는 임시 폴더
-*.log
-*.pot
-*.mo
-.DS_Store # Mac에서 자동 생성되는 파일
+*.sqlite3
+.env
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+staticfiles/
+static_root/
+media/

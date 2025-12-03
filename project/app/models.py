@@ -2,16 +2,19 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.models import User
 
+
 # Create your models here.
 class User(AbstractUser):
     name = models.CharField(max_length=150)
-    nickname= models.CharField(max_length=150,unique=True,null=True)
+    nickname = models.CharField(max_length=150, unique=True, null=True)
     profile_image = models.URLField()
-    challenge_point=models.IntegerField(default=0)
-    #challenge=models.ManyToManyField()
-    #username=email로 사용
+    challenge_point = models.IntegerField(default=0)
+
+    # challenge=models.ManyToManyField()
+    # username=email로 사용
     def __str__(self):
         return self.username
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
@@ -38,7 +41,6 @@ class Challenge(models.Model):
     current_member = models.PositiveIntegerField("현재 인원", default=1)
 
     max_member = models.PositiveIntegerField("최대 인원", default=1)
-
 
     type = models.CharField(
         "챌린지 종류(인원)",
@@ -124,3 +126,48 @@ class Verification(models.Model):
 
     def __str__(self):
         return f"{self.verified_member.username if self.verified_member else 'Unknown'} - {self.challenge.title} ({self.date.date()})"
+
+
+class Challenge(models.Model):
+    # [챌린지 제목
+    title = models.CharField(max_length=200, verbose_name="제목")
+
+    # 챌린지 내용
+    content = models.TextField(verbose_name="내용")
+
+    # 최대 회원 수
+    max_members = models.IntegerField(default=10, verbose_name="최대 인원")
+
+    # 기간
+    start_date = models.DateField(verbose_name="시작일")
+    end_date = models.DateField(verbose_name="종료일")
+
+    # 방장
+    created_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="created_challenges"
+    )
+
+    # Member
+    participants = models.ManyToManyField(
+        User, related_name="joined_challenges", blank=True
+    )
+
+    # 썸네일
+    image = models.ImageField(upload_to="challenge_thumbs/", blank=True, null=True)
+
+    # 카테고리
+    CATEGORY_CHOICES = [
+        ("study", "학습"),
+        ("workout", "운동/건강"),
+        ("reading", "독서/기록"),
+        ("habit", "생활습관"),
+        ("hobby", "취미/창작"),
+        ("mind", "멘탈"),
+    ]
+
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        default="coding",
+        verbose_name="카테고리",
+    )

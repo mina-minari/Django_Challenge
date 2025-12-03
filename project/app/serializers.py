@@ -37,8 +37,8 @@ class MyChallengeSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "content",
-            "max_member",        # 정원
-            "type",              # personal / group
+            "max_member",  # 정원
+            "type",  # personal / group
             "category",
             "is_public",
             "challenge_date",
