@@ -12,8 +12,11 @@
                 {{ challenge.get_category_display }}
             </span>
 
-            <h3 style="margin: 10px 0;">{{ challenge.title }}</h3>
-
+            <h3 style="margin: 10px 0;">
+            <a href="{% url 'challenges:detail' challenge.pk %}" style="text-decoration: none; color: inherit;">
+             {{ challenge.title }}
+            </a>
+            </h3>
             <p style="color: #666; font-size: 0.9rem;">
                 {{ challenge.content|truncatechars:50 }}
             </p>
@@ -32,7 +35,7 @@
 
         </div>
         {% empty %}
-        <p>아직 등록된 챌린지가 없어요! 관리자 페이지에서 추가해보세요.</p>
+        <p>아직 등록된 챌린지가 없습니다.</p>
         {% endfor %}
 
     </div>

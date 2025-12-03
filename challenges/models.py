@@ -48,3 +48,12 @@ class Challenge(models.Model):
         default='coding', 
         verbose_name="카테고리"
     )
+
+class Comment(models.Model):
+    challenge = models.ForeignKey(Challenge, related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE) 
+    content = models.TextField(verbose_name="응원의 한마디") 
+    created_at = models.DateTimeField(auto_now_add=True) 
+
+    def __str__(self):
+        return f"{self.user} - {self.content}"
