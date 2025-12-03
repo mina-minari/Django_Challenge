@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path("", views.mypage, name="mypage"),
@@ -10,9 +11,7 @@ urlpatterns = [
     path("api/mypage/", views.mypage_api, name="mypage_api"),
     path("api/my-challenges/", views.my_challenges_api, name="my_challenges_api"),
 ]
-from django.urls import path
-from . import views
-from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     path('', views.signup, name='signup'),

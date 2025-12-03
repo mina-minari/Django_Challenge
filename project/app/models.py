@@ -112,7 +112,7 @@ class Verification(models.Model):
         related_name="verifications",
         null=True,
         blank=True,
-from django.contrib.auth.models import User # 회원가입/로그인/비밀번호 암호화를 처리해주는 인증 django내 인증앱
+    )
 
 class Challenge(models.Model):
     """
