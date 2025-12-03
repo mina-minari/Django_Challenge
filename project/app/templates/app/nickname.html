@@ -1,0 +1,12 @@
+<html>
+    <head>
+        <title>nickname Page</title>
+    </head>
+    <body>
+        <form method="POST">
+            {% csrf_token %} {{form.as_p}}
+            <button type="submit">저장</button>
+        </form>
+        <a href="logout/">로그아웃</a>
+    </body>
+</html>

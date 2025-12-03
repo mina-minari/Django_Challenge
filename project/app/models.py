@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 class User(AbstractUser):
     name = models.CharField(max_length=150)
+    nickname= models.CharField(max_length=150,unique=True,null=True)
     profile_image = models.URLField()
     challenge_point=models.IntegerField(default=0)
     #challenge=models.ManyToManyField()
