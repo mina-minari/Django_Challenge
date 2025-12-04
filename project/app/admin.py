@@ -1,9 +1,11 @@
 from django.contrib import admin
 from .models import UserProfile, Challenge, Verification
 
+
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ("user", "profile_image", "bio")
+
 
 @admin.register(Challenge)
 class ChallengeAdmin(admin.ModelAdmin):
@@ -50,5 +52,3 @@ class VerificationAdmin(admin.ModelAdmin):
         "verified_member__username",
         "challenge__title",
     )
-
-

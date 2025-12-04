@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from .models import UserProfile, Challenge
-
+from rest_framework.permissions import IsAuthenticated
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    permission_classes = [IsAuthenticated]
     # User 모델에서 username 끌어오기 (UserProfile에는 username 필드가 없음)
     username = serializers.CharField(source="user.username", read_only=True)
 
@@ -27,6 +28,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class MyChallengeSerializer(serializers.ModelSerializer):
+    permission_classes = [IsAuthenticated]
     participants_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
     is_full = serializers.SerializerMethodField()

@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
-import os
 import json
 import requests
 from .models import User, Challenge, Verification, UserProfile
@@ -9,17 +8,16 @@ from django.contrib.auth import login, logout
 from .forms import NicknameForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.urls import reverse
-from django.db.models import Count
-from django.contrib.auth.models import User
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .serializers import UserProfileSerializer, MyChallengeSerializer
+from .forms import ChallengeForm, VerificationForm
 
 user = User()
 google_user_info_url = "https://www.googleapis.com/oauth2/v3/userinfo"
 try:
-    with open("/workspaces/Django_Challenge/project/app/secret.json", "r") as f:
+    with open("app/secret.json", "r") as f:
         secrets = json.load(f)  # 딕셔너리 형태
         client_id = secrets["web"]["client_id"]
         redirect_uri = secrets["web"]["redirect_uris"][0]
@@ -34,8 +32,8 @@ except json.JSONDecodeError:
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "app/home.html")
-    return render(request, "app/login.html")
+        return render(request, "accounts/home.html")
+    return render(request, "accounts/login.html")
 
 
 def google_login(request):
@@ -116,7 +114,7 @@ def nickname_form(request):
         return redirect("/")
     else:
         form = NicknameForm()
-        return render(request, "app/nickname.html", {"form": form})
+        return render(request, "accounts/nickname.html", {"form": form})
 
 
 def user_logout(request):
@@ -126,7 +124,7 @@ def user_logout(request):
 
 def get_current_user(request):
     # 현재는 username1 기준으로 확인할 수 있게 함
-    return User.objects.get(username="username1")
+    return User.objects.get(username=request.user.username)
 
 
 def get_user_profile(user: User) -> UserProfile:
@@ -138,7 +136,7 @@ def get_user_challenges(user: User):
     # Challenge.members(M2M) 기준으로 유저가 참여 중인 챌린지 조회
     return Challenge.objects.filter(members=user).distinct()
 
-
+@login_required
 def mypage(request):
     user = get_current_user(request)
     profile = get_user_profile(user)
@@ -156,27 +154,30 @@ def mypage(request):
         "profile": profile_data,
         "menu_items": menu_items,
     }
-    return render(request, "mypage.html", context)
+    return render(request, "challenge/mypage.html", context)
 
 
+@login_required
 def my_challenges(request):
     user = get_current_user(request)
     challenges_qs = get_user_challenges(user)
     challenges_data = MyChallengeSerializer(challenges_qs, many=True).data
 
     context = {"challenges": challenges_data}
-    return render(request, "my_challenges.html", context)
+    return render(request, "challenge/my_challenges.html", context)
 
 
+@login_required
 def edit_profile(request):
-    return render(request, "edit_profile.html")
+    return render(request, "challenge/edit_profile.html")
 
-
+@login_required
 def upload_history(request):
-    return render(request, "upload_history.html")
+    return render(request, "challenge/upload_history.html")
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def mypage_api(request):
     user = get_current_user(request)
     profile = get_user_profile(user)
@@ -198,6 +199,7 @@ def mypage_api(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def my_challenges_api(request):
     user = get_current_user(request)
     challenges_qs = get_user_challenges(user)
@@ -206,6 +208,7 @@ def my_challenges_api(request):
     return Response(data)
 
 
+@login_required
 def challenge_list(request):
     challenges = Challenge.objects.all().order_by("-created_at")
     return render(
@@ -214,44 +217,26 @@ def challenge_list(request):
         {"challenges": challenges},
     )
 
-
-def challenge_list(request):
-
-    challenges = Challenge.objects.all().order_by("-id")
-
-    context = {"challenges": challenges}
-
-    return render(request, "challenges/challenge_list.html", context)
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.contrib.auth import login, logout
-
-## models와 form 가져오기
-from .models import Challenge, Verification
-from .forms import ChallengeForm, VerificationForm, SignUpForm
-
-# 챌린지 목록
-def challenge_list(request):
-    challenges = Challenge.objects.all()
-    return render(request, 'challenge/challenge_list.html', {
-        'challenges': challenges,
-    })
-
 # 챌린지 상세
+@login_required
 def challenge_detail(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-    verifications = challenge.verifications.select_related('verified_member')
+    verifications = challenge.verifications.select_related("verified_member")
 
-    return render(request, 'challenge/challenge_detail.html', {
-        'challenge': challenge,
-        'verifications': verifications,
-    })
+    return render(
+        request,
+        "challenge/challenge_detail.html",
+        {
+            "challenge": challenge,
+            "verifications": verifications,
+        },
+    )
+
 
 # 챌린지 생성 뷰
 @login_required
 def challenge_create(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ChallengeForm(request.POST)
         if form.is_valid():
             challenge = form.save(commit=False)
@@ -261,14 +246,19 @@ def challenge_create(request):
 
             # 방장도 참여자에 포함
             challenge.members.add(request.user)
-            messages.success(request, '챌린지가 생성되었습니다')
-            return redirect('challenge_detail', pk=challenge.pk)
+            messages.success(request, "챌린지가 생성되었습니다")
+            return redirect("challenge_detail", pk=challenge.pk)
     else:
         form = ChallengeForm()
 
-    return render(request, 'challenge/challenge_form.html', {
-        'form': form,
-    })
+    return render(
+        request,
+        "challenge/challenge_form.html",
+        {
+            "form": form,
+        },
+    )
+
 
 @login_required
 def challenge_join(request, pk):
@@ -276,15 +266,16 @@ def challenge_join(request, pk):
 
     # 이미 참여중이면 막기
     if challenge.members.filter(id=request.user.id).exists():
-        messages.info(request, '해당 챌린지에 참여중입니다.')
-        return redirect('challenge_detail', pk=pk)
-    
+        messages.info(request, "해당 챌린지에 참여중입니다.")
+        return redirect("challenge_detail", pk=pk)
+
     challenge.members.add(request.user)
     challenge.current_member = challenge.members.count()
-    challenge.save(update_fields=['current_member'])
+    challenge.save(update_fields=["current_member"])
 
-    messages.succes(request, '챌린지에 참여했습니다.')
-    return redirect('challenge_detail', pk=pk)
+    messages.success(request, "챌린지에 참여했습니다.")
+    return redirect("challenge_detail", pk=pk)
+
 
 @login_required
 def verification_create(request, pk):
@@ -292,10 +283,10 @@ def verification_create(request, pk):
 
     # 👉 챌린지 참가자만 인증하게 하고 싶다면
     if not challenge.members.filter(id=request.user.id).exists():
-        messages.error(request, '이 챌린지에 참여 중인 회원만 인증할 수 있습니다.')
-        return redirect('challenge_detail', pk=pk)
+        messages.error(request, "이 챌린지에 참여 중인 회원만 인증할 수 있습니다.")
+        return redirect("challenge_detail", pk=pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = VerificationForm(request.POST, request.FILES)
         if form.is_valid():
             verification = form.save(commit=False)
@@ -303,41 +294,16 @@ def verification_create(request, pk):
             verification.challenge = challenge
             verification.save()
 
-            messages.success(request, '인증이 완료되었습니다!')
-            return redirect('challenge_detail', pk=pk)
+            messages.success(request, "인증이 완료되었습니다!")
+            return redirect("challenge_detail", pk=pk)
     else:
         form = VerificationForm()
 
-    return render(request, 'challenge/verification_form.html', {
-        'challenge': challenge,
-        'form': form,
-    })
-
-def signup(request):
-    """
-    아주 간단한 회원가입 페이지
-    - 아이디, 비밀번호만 입력받아서 User 생성
-    - 회원가입 후 자동 로그인 시키고 챌린지 목록으로 이동
-    """
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)               # 자동 로그인
-            messages.success(request, '회원가입이 완료되었습니다.')
-            return redirect('challenge_list')  # 챌린지 목록으로 이동
-    else:
-        form = SignUpForm()
-
-    return render(request, 'accounts/signup.html', {
-        'form': form,
-    })
-
-def logout_view(request):
-    """
-    GET으로도 호출 가능한 간단 로그아웃 뷰
-    - 세션에서 유저 로그아웃
-    - 로그인 페이지로 리다이렉트
-    """
-    logout(request)
-    return redirect('login')
+    return render(
+        request,
+        "challenge/verification_form.html",
+        {
+            "challenge": challenge,
+            "form": form,
+        },
+    )

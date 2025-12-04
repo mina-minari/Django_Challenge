@@ -1,69 +1,67 @@
-{% extends "base.html" %}
+{% extends 'challenge/challenge_base.html' %}
 
 {% block content %}
-<div class="container py-4">
+<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    
+   
+    <a href="{% url 'challenge_list' %}" style="text-decoration: none; color: #666;">← 목록으로 돌아가기</a>
 
-  <div class="mb-3">
-    <a href="{% url 'challenge_list' %}" class="btn btn-sm btn-outline-secondary">← 목록으로</a>
-  </div>
+  
+    <div style="margin-top: 20px; border: 1px solid #ddd; padding: 30px; border-radius: 15px; background: white;">
+        <span style="background-color: #e3f2fd; color: #1565c0; padding: 5px 10px; border-radius: 20px; font-weight: bold;">
+            {{ challenge.get_category_display }}
+        </span>
+        <h1 style="margin-top: 15px;">{{ challenge.title }}</h1>
+        
+        <div style="color: #555; margin: 10px 0;">
+            <span>👑 방장: {{ challenge.created_by.username }}</span> | 
+            <span>📅 {{ challenge.start_date }} ~ {{ challenge.end_date }}</span> |
+            <span>👥 {{ challenge.participants.count }} / {{ challenge.max_members }}명</span>
+        </div>
+        
+        <hr>
+        
+        <div style="margin-top: 20px; line-height: 1.6;">
+          
+            {{ challenge.content|linebreaks }}
+        </div>
+        
+        <form method="POST" action="{% url 'challenge_join' challenge.pk %}" style="margin-top: 30px;">
+        {% csrf_token %}
+            <button style="margin-top: 30px; width: 100%; padding: 15px; background-color: #4CAF50; color: white; border: none; border-radius: 10px; font-size: 1.1rem; cursor: pointer;">
+                챌린지 참여하기
+            </button>
+        </form>
+    </div>
 
-  <div class="card mb-4">
-    <div class="card-body">
-      <h3 class="card-title mb-2">{{ challenge.title }}</h3>
-      <p class="text-muted mb-1">
-        리더: {{ challenge.leader.username }} ·
-        유형: {{ challenge.get_type_display }}
-      </p>
-      <p class="text-muted mb-2">
-        인원: {{ challenge.current_member }} / {{ challenge.max_member }}
-      </p>
-      <p class="card-text">{{ challenge.content|linebreaksbr }}</p>
-
-      {% if user.is_authenticated %}
-        {% if user in challenge.members.all %}
-          <span class="badge bg-success">참여 중인 챌린지</span>
+  
+    <div style="margin-top: 40px;">
+        <h3>💬 응원의 한마디 ({{ comments.count }})</h3>
+        
+       
+        {% if user.is_authenticated %}
+        <form method="POST" style="display: flex; gap: 10px; margin-bottom: 30px;">
+            {% csrf_token %} 
+            <textarea name="content" placeholder="따뜻한 응원의 말을 남겨주세요!" style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; resize: none;" rows="3" required></textarea>
+            <button type="submit" style="background-color: #2196F3; color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer;">등록</button>
+        </form>
         {% else %}
-          <a href="{% url 'challenge_join' challenge.pk %}" class="btn btn-outline-primary btn-sm mt-2">
-            이 챌린지 참여하기
-          </a>
+        <p style="color: #888; text-align: center; padding: 20px; background: #f9f9f9;">로그인 후 응원 메시지를 남길 수 있습니다.</p>
         {% endif %}
-      {% endif %}
-    </div>
-  </div>
 
-  {% if user.is_authenticated and user in challenge.members.all %}
-    <div class="mb-4">
-      <h5>📸 오늘 인증하기</h5>
-      <a href="{% url 'verification_create' challenge.pk %}" class="btn btn-primary">
-        사진 업로드로 인증하기
-      </a>
-    </div>
-  {% endif %}
-
-  <div>
-    <h5>최근 인증 내역</h5>
-    {% if verifications %}
-      <div class="row row-cols-1 row-cols-md-3 g-3 mt-2">
-        {% for v in verifications %}
-          <div class="col">
-            <div class="card h-100">
-              <img src="{{ v.image.url }}" class="card-img-top" alt="인증 이미지">
-              <div class="card-body">
-                <h6 class="card-title mb-1">{{ v.verified_member.username }}</h6>
-                <p class="card-text">
-                  <small class="text-muted">
-                    {{ v.date|date:"Y-m-d H:i" }}
-                  </small>
-                </p>
-              </div>
+        
+        {% for comment in comments %}
+        <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+            <div style="font-weight: bold; margin-bottom: 5px;">
+                {{ comment.user.username }} 
+                <small style="color: #aaa; font-weight: normal; margin-left: 10px;">{{ comment.created_at|date:"Y.m.d H:i" }}</small>
             </div>
-          </div>
+            <div>{{ comment.content }}</div>
+        </div>
+        {% empty %}
+        <p>아직 작성된 응원 메시지가 없습니다. 첫 번째 응원을 남겨보세요!</p>
         {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-muted mt-2">아직 인증 내역이 없습니다.</p>
-    {% endif %}
-  </div>
+    </div>
 
 </div>
 {% endblock %}
