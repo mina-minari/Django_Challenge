@@ -1,0 +1,21 @@
+{% extends "challenge/challenge_base.html" %}
+
+{% block content %}
+<div class="container py-4">
+  <h3 class="mb-3">📸 인증 업로드 - {{ challenge.title }}</h3>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+      <label class="form-label">인증 사진</label>
+      {{ form.image }}
+      {{ form.image.errors }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">인증하기</button>
+    <a href="{% url 'challenge_detail' challenge.pk %}" class="btn btn-secondary ms-2">취소</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'challenge/challenge_base.html' %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; padding: 20px;">
+    
+   
+    <a href="{% url 'challenge_list' %}" style="text-decoration: none; color: #666;">← 목록으로 돌아가기</a>
+
+  
+    <div style="margin-top: 20px; border: 1px solid #ddd; padding: 30px; border-radius: 15px; background: white;">
+        <span style="background-color: #e3f2fd; color: #1565c0; padding: 5px 10px; border-radius: 20px; font-weight: bold;">
+            {{ challenge.get_category_display }}
+        </span>
+        <h1 style="margin-top: 15px;">{{ challenge.title }}</h1>
+        
+        <div style="color: #555; margin: 10px 0;">
+            <span>👑 방장: {{ challenge.created_by.username }}</span> | 
+            <span>📅 {{ challenge.start_date }} ~ {{ challenge.end_date }}</span> |
+            <span>👥 {{ challenge.participants.count }} / {{ challenge.max_members }}명</span>
+        </div>
+        
+        <hr>
+        
+        <div style="margin-top: 20px; line-height: 1.6;">
+          
+            {{ challenge.content|linebreaks }}
+        </div>
+        
+        <form method="POST" action="{% url 'challenge_join' challenge.pk %}" style="margin-top: 30px;">
+        {% csrf_token %}
+            <button style="margin-top: 30px; width: 100%; padding: 15px; background-color: #4CAF50; color: white; border: none; border-radius: 10px; font-size: 1.1rem; cursor: pointer;">
+                챌린지 참여하기
+            </button>
+        </form>
+    </div>
+
+  
+    <div style="margin-top: 40px;">
+        <h3>💬 응원의 한마디 ({{ comments.count }})</h3>
+        
+       
+        {% if user.is_authenticated %}
+        <form method="POST" style="display: flex; gap: 10px; margin-bottom: 30px;">
+            {% csrf_token %} 
+            <textarea name="content" placeholder="따뜻한 응원의 말을 남겨주세요!" style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ccc; resize: none;" rows="3" required></textarea>
+            <button type="submit" style="background-color: #2196F3; color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer;">등록</button>
+        </form>
+        {% else %}
+        <p style="color: #888; text-align: center; padding: 20px; background: #f9f9f9;">로그인 후 응원 메시지를 남길 수 있습니다.</p>
+        {% endif %}
+
+        
+        {% for comment in comments %}
+        <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+            <div style="font-weight: bold; margin-bottom: 5px;">
+                {{ comment.user.username }} 
+                <small style="color: #aaa; font-weight: normal; margin-left: 10px;">{{ comment.created_at|date:"Y.m.d H:i" }}</small>
+            </div>
+            <div>{{ comment.content }}</div>
+        </div>
+        {% empty %}
+        <p>아직 작성된 응원 메시지가 없습니다. 첫 번째 응원을 남겨보세요!</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
