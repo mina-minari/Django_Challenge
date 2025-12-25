@@ -8,7 +8,7 @@ from django.contrib.auth import login, logout
 from .forms import NicknameForm
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from rest_framework.decorators import api_view,permission_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserProfileSerializer, MyChallengeSerializer
@@ -32,7 +32,7 @@ except json.JSONDecodeError:
 
 def index(request):
     if request.user.is_authenticated:
-        return render(request, "accounts/home.html")
+        return redirect("challenge_list")
     return render(request, "accounts/login.html")
 
 
@@ -83,21 +83,29 @@ def google_callback(request):
             username=email
         )  # 사용자가 이름이나 프사를 바꿔도 업데이트 안됨
     except User.DoesNotExist:
-        return redirect(
-            f"/nickname/?name={name}&email={email}&profile_image={profile_image}"
-        )
+        request.session["social_login_data"] = {
+            "name": name,
+            "email": email,
+            "profile_image": profile_image,
+        }
+        return redirect("nickname_form")
     except IntegrityError:
         return HttpResponse("데이터베이스 오류가 발생했습니다.", status=500)
     login(request, user)
-    return redirect("/")
+    return redirect("index")
 
 
 def nickname_form(request):
     if request.method == "POST":
+        social_data = request.session.get("social_login_data")
+        # 만약 세션에 데이터가 없다면? (URL로 직접 접속한 경우)
+        if not social_data:
+            messages.error(request, "잘못된 접근입니다. 다시 로그인해주세요.")
+            return redirect("index")
         nickname = request.POST.get("nickname")
-        name = request.GET.get("name")
-        email = request.GET.get("email")
-        profile_image = request.GET.get("profile_image")
+        name = social_data.get("name")
+        email = social_data.get("email")
+        profile_image = social_data.get("profile_image")
         try:
             user = User.objects.create_user(
                 username=email,
@@ -111,15 +119,33 @@ def nickname_form(request):
                 "닉네임이 이미 사용 중입니다. 다른 닉네임을 선택해주세요.", status=400
             )
         login(request, user)
-        return redirect("/")
+        return redirect("index")
     else:
         form = NicknameForm()
         return render(request, "accounts/nickname.html", {"form": form})
 
 
+@login_required
+def ranking_view(request):
+    users = []
+    for i in range(1, 31):
+        users.append(
+            {
+                "id": i,
+                "name": f"홍길동{i}",
+                "nickname": f"챌린저_{i}",
+                # 랜덤 프로필 이미지 (실제 이미지 주소 대신 placeholder 사용)
+                "profile_image": f"https://picsum.photos/id/{i+10}/50/50",
+                "challenge_point": 3000 - (i * 100),  # 2900, 2800... 점수 내림차순
+            }
+        )
+    # users = User.objects.all().order_by('-challenge_point')
+    return render(request, "challenge/challenge_rank.html", {"users": users})
+
+
 def user_logout(request):
     logout(request)
-    return redirect("/")
+    return redirect("index")
 
 
 def get_current_user(request):
@@ -135,6 +161,7 @@ def get_user_profile(user: User) -> UserProfile:
 def get_user_challenges(user: User):
     # Challenge.members(M2M) 기준으로 유저가 참여 중인 챌린지 조회
     return Challenge.objects.filter(members=user).distinct()
+
 
 @login_required
 def mypage(request):
@@ -170,6 +197,7 @@ def my_challenges(request):
 @login_required
 def edit_profile(request):
     return render(request, "challenge/edit_profile.html")
+
 
 @login_required
 def upload_history(request):
@@ -216,6 +244,7 @@ def challenge_list(request):
         "challenge/challenge_list.html",
         {"challenges": challenges},
     )
+
 
 # 챌린지 상세
 @login_required
