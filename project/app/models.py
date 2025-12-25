@@ -9,7 +9,7 @@ class User(AbstractUser):
     nickname = models.CharField(max_length=150, unique=True, null=True)
     profile_image = models.URLField()
     challenge_point = models.IntegerField(default=0)
-    
+
     def __str__(self):
         return self.username
 

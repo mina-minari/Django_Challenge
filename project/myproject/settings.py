@@ -12,7 +12,7 @@ DEBUG = os.getenv("DEBUG", "TRUE") == "TRUE"
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
-
+LOGIN_URL = "/"
 # Application definition
 
 INSTALLED_APPS = [
