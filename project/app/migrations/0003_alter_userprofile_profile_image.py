@@ -6,8 +6,9 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0002_alter_challenge_options_alter_verification_options_and_more'),
+    ('app', '0002_user_nickname_challenge_comment_userprofile_and_more'),
     ]
+
 
     operations = [
         migrations.AlterField(

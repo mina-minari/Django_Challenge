@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
-from django.http import JsonResponse
 import json
 import requests
 from django.db import IntegrityError
@@ -17,8 +16,8 @@ from .forms import NicknameForm, ChallengeForm, VerificationForm, ProfileForm
 from .serializers import UserProfileSerializer, MyChallengeSerializer, VerificationSerializer
 
 
-user = User()
 google_user_info_url = "https://www.googleapis.com/oauth2/v3/userinfo"
+
 try:
     with open("app/secret.json", "r") as f:
         secrets = json.load(f)
@@ -178,7 +177,6 @@ def mypage(request):
         {"name": "Upload History", "url_name": "upload_history"},
         {"name": "Edit Profile", "url_name": "edit_profile"},
         {"name": "Settings", "url_name": "#"},
-        {"name": "Log Out", "url_name": "#"},
     ]
 
     return render(
@@ -253,7 +251,6 @@ def mypage_api(request):
         {"name": "Upload History", "url_name": "upload_history"},
         {"name": "Edit Profile", "url_name": "edit_profile"},
         {"name": "Settings", "url_name": "#"},
-        {"name": "Log Out", "url_name": "#"},
     ]
 
     return Response({"profile": profile_data, "menu_items": menu_items})

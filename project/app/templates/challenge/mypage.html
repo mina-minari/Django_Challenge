@@ -1,112 +1,50 @@
-<<<<<<< HEAD:project/app/templates/mypage.html
+{% extends "challenge/challenge_base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My Page</title>
-  <link rel="stylesheet" href="{% static 'app/style.css' %}">
-</head>
-<body>
-  <div class="layout">
-    <header class="page-header">
-      <h1 class="page-title">My Page</h1>
-    </header>
 
-    <section class="profile-section">
-      <div class="profile-avatar">
-        {% if profile.profile_image %}
-          <img src="{{ profile.profile_image.url }}" alt="프로필 이미지">
+{% block content %}
+<link rel="stylesheet" href="{% static 'app/style.css' %}">
+
+<div class="mypage-root">
+  <div class="mypage-header">
+    <h1 class="mypage-title">My Page</h1>
+  </div>
+
+  <section class="mypage-card profile-section">
+    <div class="profile-avatar">
+      {% if profile.profile_image %}
+        <img src="{{ profile.profile_image.url }}" alt="프로필 이미지">
+      {% else %}
+        <img src="{% static 'app/default-profile.png' %}" alt="기본 프로필 이미지">
+      {% endif %}
+    </div>
+
+
+    <div class="profile-text">
+      <div class="name">{{ profile.user.username }}</div>
+      <div class="meta">Participating in {{ participating_count }} challenges</div>
+
+      {% if profile.bio %}
+        <div class="meta bio">{{ profile.bio }}</div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="mypage-card menu-section">
+    <div class="menu-list">
+      {% for item in menu_items %}
+        {% if item.url_name == "#" %}
+          <a href="#" class="menu-item" onclick="return false">
+            <span>{{ item.name }}</span>
+            <span class="chevron">&gt;</span>
+          </a>
         {% else %}
-          <img src="{% static 'app/default-profile.png' %}" alt="기본 프로필 이미지">
+          <a href="{% url item.url_name %}" class="menu-item">
+            <span>{{ item.name }}</span>
+            <span class="chevron">&gt;</span>
+          </a>
         {% endif %}
-      </div>
-
-      <div class="profile-text">
-        <div class="name">{{ profile.user.username }}</div>
-        <div class="meta">
-          Participating in {{ participating_count }} challenges
-        </div>
-        {% if profile.bio %}
-          <div class="meta" style="margin-top:4px;">
-            {{ profile.bio }}
-          </div>
-        {% endif %}
-      </div>
-    </section>
-
-
-
-    <section>
-      <div class="menu-list">
-        {% for item in menu_items %}
-          {% if item.url_name == "#" %}
-            <a href="#" class="menu-item" onclick="return false">
-              <span>{{ item.name }}</span>
-              <span class="chevron">&gt;</span>
-            </a>
-          {% else %}
-            <a href="{% url item.url_name %}" class="menu-item">
-              <span>{{ item.name }}</span>
-              <span class="chevron">&gt;</span>
-            </a>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
-  </div>
-</body>
-</html>
-=======
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My Page</title>
-  <link rel="stylesheet" href="{% static 'app/style.css' %}">
-</head>
-<body>
-  <div class="layout">
-    <header class="page-header">
-      <h1 class="page-title">My Page</h1>
-    </header>
-
-    <section class="profile-section">
-      <div class="profile-avatar"></div>
-      <div class="profile-text">
-        <div class="name">{{ profile.username }}</div>
-        <div class="meta">
-          Participating in {{ profile.participating_count }} challenges
-        </div>
-        {% if profile.bio %}
-        <div class="meta" style="margin-top:4px;">
-          {{ profile.bio }}
-        </div>
-        {% endif %}
-      </div>
-    </section>
-
-    <section>
-      <div class="menu-list">
-        {% for item in menu_items %}
-          {% if item.url_name == "#" %}
-            <!-- 아직 URL 없는 메뉴 (Settings, Log Out 등) -->
-            <a href="#" class="menu-item" onclick="return false">
-              <span>{{ item.name }}</span>
-              <span class="chevron">&gt;</span>
-            </a>
-          {% else %}
-            <!-- URL name 이 있는 메뉴 -->
-            <a href="{% url item.url_name %}" class="menu-item">
-              <span>{{ item.name }}</span>
-              <span class="chevron">&gt;</span>
-            </a>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
-  </div>
-</body>
-</html>
->>>>>>> origin/main:project/app/templates/challenge/mypage.html
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}

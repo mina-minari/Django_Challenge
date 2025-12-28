@@ -1,356 +1,401 @@
-/* 공통 레이아웃 */
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f3f5fb;
-  margin: 0;
-  padding: 0;
+:root{
+  --bg:#ffffff;
+  --text:#0b0b0d;
+  --muted:#5f6368;
+  --line:#0b0b0d;
+  --soft:#e9e9ee;
+  --panel:#ffffff;
+  --hover:#f6f6f8;
 }
 
-.layout {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px 32px;
-  box-sizing: border-box;
-  background: #ffffff;
-  min-height: 100vh;
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  padding:0;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);
+  color:var(--text);
 }
 
-/* 상단 헤더 */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
+.layout{
+  max-width:1100px;
+  margin:0 auto;
+  padding:36px 32px 64px;
+  background:transparent;
+  min-height:auto;
 }
 
-.page-title {
-  font-size: 24px;
-  font-weight: 700;
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin:10px 0 18px;
 }
 
-/* My Page 전용 */
-.profile-section {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-  border-radius: 16px;
-  background: #f2f4fa;
-  margin-bottom: 24px;
+.page-title{
+  margin:0;
+  font-size:52px;
+  font-weight:300;
+  letter-spacing:-1px;
+  line-height:1.05;
+  color:var(--text);
 }
 
-.profile-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  border: 2px solid #c6cce5;
-  background: #e0e4f2;
-  overflow: hidden;    
-  flex-shrink: 0;     
+.profile-section{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  padding:22px 24px;
+  border-radius:18px;
+  background:var(--panel);
+  border:2px solid var(--line);
+  margin-bottom:18px;
 }
 
-.profile-avatar img {
-  width: 100%;         
-  height: 100%;
-  object-fit: cover;    
-  display: block;
+.profile-avatar{
+  width:86px;
+  height:86px;
+  border-radius:50%;
+  border:2px solid var(--line);
+  background:#fff;
+  overflow:hidden;
+  flex-shrink:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.profile-text .name {
-  font-weight: 600;
-  font-size: 18px;
-  margin-bottom: 4px;
+.profile-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
-.profile-text .meta {
-  font-size: 13px;
-  color: #8b90a8;
+.profile-text .name{
+  font-weight:700;
+  font-size:20px;
+  margin-bottom:6px;
+  color:var(--text);
 }
 
-/* 메뉴 리스트 (My Page) */
-.menu-list {
-  border-radius: 16px;
-  background: #f2f4fa;
-  padding: 8px 0;
+.profile-text .meta{
+  font-size:13px;
+  color:var(--muted);
 }
 
-.menu-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  font-size: 14px;
-  text-decoration: none;
-  color: #222;
+.menu-list{
+  border-radius:18px;
+  background:var(--panel);
+  border:2px solid var(--line);
+  overflow:hidden;
 }
 
-.menu-item + .menu-item {
-  border-top: 1px solid #e0e4f2;
+.menu-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 20px;
+  font-size:16px;
+  font-weight:600;
+  text-decoration:none;
+  color:var(--text);
+  background:transparent;
+  transition:background .12s ease, transform .06s ease;
 }
 
-.menu-item:hover {
-  background: #e2e6f5;
+.menu-item + .menu-item{
+  border-top:1px solid var(--soft);
 }
 
-.menu-item span {
-  font-weight: 500;
+.menu-item:hover{
+  background:var(--hover);
 }
 
-.menu-item .chevron {
-  font-size: 14px;
-  color: #a0a5bd;
+.menu-item:active{
+  transform:translateY(1px);
 }
 
-/* My Challenges 전용 */
-.challenge-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.menu-item span{
+  font-weight:600;
 }
 
-.challenge-card {
-  background: #f2f4fa;
-  border-radius: 16px;
-  padding: 14px 16px;
+.menu-item .chevron{
+  font-size:18px;
+  color:var(--muted);
 }
 
-.challenge-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 4px;
+.back-link{
+  font-size:14px;
+  text-decoration:none;
+  color:var(--text);
+  border-bottom:1px solid rgba(0,0,0,.35);
 }
 
-.challenge-meta {
-  font-size: 12px;
-  color: #8b90a8;
-  margin-bottom: 8px;
+.challenge-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-.progress-bar {
-  width: 100%;
-  height: 8px;
-  border-radius: 999px;
-  background: #dde1f0;
-  overflow: hidden;
+.challenge-card{
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:18px;
+  padding:16px 18px;
 }
 
-.progress-fill {
-  height: 100%;
-  border-radius: inherit;
-  background: #5a6bff;
+.challenge-title{
+  font-size:16px;
+  font-weight:700;
+  margin:0 0 6px;
 }
 
-/* Upload History 전용 */
-
-.upload-history-grid {
-  padding-bottom: 40px;
+.challenge-meta{
+  font-size:12px;
+  color:var(--muted);
+  margin:0 0 10px;
 }
 
-/* 전체 그리드 컨테이너: 3 x N */
-.upload-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));  /* 항상 3열 */
-  gap: 12px;
+.progress-bar{
+  width:100%;
+  height:8px;
+  border-radius:999px;
+  background:#efeff3;
+  overflow:hidden;
+  border:1px solid #d9d9e0;
 }
 
-/* 각 칸 (카드) */
-.upload-grid-item {
-  position: relative;
-  background: #000;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
+.progress-fill{
+  height:100%;
+  border-radius:inherit;
+  background:var(--line);
 }
 
-/* 이미지 */
-.upload-grid-image {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  display: block;
+.upload-history-grid{
+  padding-bottom:40px;
 }
 
-/* 아래 캡션: 호버 시만 살짝 보이게 */
-.upload-grid-caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 6px 8px;
-  background: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.6),
-    rgba(0, 0, 0, 0.0)
-  );
-  color: #fff;
-  font-size: 11px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  opacity: 0;
-  transition: opacity 0.18s ease-out;
+.upload-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
 }
 
-.upload-grid-item:hover .upload-grid-caption {
-  opacity: 1;
+.upload-grid-item{
+  position:relative;
+  background:#000;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  border:2px solid var(--line);
 }
 
-.upload-grid-title {
-  font-weight: 500;
-  max-width: 70%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.upload-grid-image{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  display:block;
+  filter:grayscale(1) contrast(1.05);
 }
 
-.upload-grid-date {
-  font-size: 10px;
-  opacity: 0.8;
+.upload-grid-caption{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:8px 10px;
+  background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0));
+  color:#fff;
+  font-size:11px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  opacity:0;
+  transition:opacity .16s ease-out;
 }
 
-/* 화면 좁을 때는 2열 */
-@media (max-width: 640px) {
-  .layout {
-    padding: 16px;
-  }
-  .upload-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.upload-grid-item:hover .upload-grid-caption{
+  opacity:1;
 }
 
-/* 공통 링크 */
-.back-link {
-  font-size: 14px;
-  text-decoration: none;
-  color: #555;
+.upload-grid-title{
+  font-weight:600;
+  max-width:70%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
-/* Edit Profile 전용 레이아웃 */
-.edit-profile-wrapper {
-  display: flex;
-  justify-content: center;
+.upload-grid-date{
+  font-size:10px;
+  opacity:.85;
 }
 
-/* 폼 카드 */
-.edit-profile-card {
-  width: 420px;
-  background: #f5f6fd;
-  border-radius: 16px;
-  padding: 20px 24px 18px;
-  box-sizing: border-box;
-  border: 1px solid #e0e4f5;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+.edit-profile-wrapper{
+  display:flex;
+  justify-content:center;
 }
 
-/* 폼 그룹 */
-.form-group {
-  margin-bottom: 16px;
+.edit-profile-card{
+  width:420px;
+  background:#fff;
+  border-radius:18px;
+  padding:20px 24px 18px;
+  box-sizing:border-box;
+  border:2px solid var(--line);
 }
 
-.form-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 6px;
+.form-group{
+  margin-bottom:16px;
 }
 
-/* 인풋/텍스트에어리어 공통 스타일 */
+.form-label{
+  display:block;
+  font-size:12px;
+  font-weight:700;
+  margin-bottom:7px;
+  color:var(--text);
+}
+
 .form-input,
-.form-textarea {
-  width: 100%;
-  box-sizing: border-box;
-  border-radius: 10px;
-  border: 1px solid #d1d6ee;
-  padding: 8px 10px;
-  font-size: 14px;
-  outline: none;
-  background: #fff;
+.form-textarea{
+  width:100%;
+  box-sizing:border-box;
+  border-radius:12px;
+  border:2px solid var(--line);
+  padding:10px 12px;
+  font-size:14px;
+  outline:none;
+  background:#fff;
+  color:var(--text);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder{
+  color:rgba(0,0,0,.45);
 }
 
 .form-input:focus,
-.form-textarea:focus {
-  border-color: #5a6bff;
-  box-shadow: 0 0 0 1px rgba(90, 107, 255, 0.25);
+.form-textarea:focus{
+  box-shadow:0 0 0 4px rgba(0,0,0,.08);
 }
 
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
+.form-textarea{
+  resize:vertical;
+  min-height:90px;
 }
 
-.form-help {
-  margin-top: 4px;
-  font-size: 11px;
-  color: #9aa0ba;
+.form-help{
+  margin-top:6px;
+  font-size:11px;
+  color:var(--muted);
 }
 
-/* 에러 메시지 */
-.field-error {
-  margin-top: 4px;
-  font-size: 12px;
-  color: #d9534f;
+.field-error{
+  margin-top:6px;
+  font-size:12px;
+  color:#b00020;
+  font-weight:600;
 }
 
-.form-errors {
-  margin-bottom: 12px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: #ffe5e5;
-  color: #b3261e;
-  font-size: 13px;
+.form-errors{
+  margin-bottom:12px;
+  padding:10px 12px;
+  border-radius:12px;
+  background:#fff;
+  border:2px solid #b00020;
+  color:#b00020;
+  font-size:13px;
+  font-weight:600;
 }
 
-/* 버튼 영역 */
-.form-actions {
-  margin-top: 8px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
+.form-actions{
+  margin-top:10px;
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
 }
 
-.primary-button {
-  padding: 9px 18px;
-  border-radius: 999px;
-  border: none;
-  background: #5a6bff;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
+.primary-button{
+  padding:10px 18px;
+  border-radius:999px;
+  border:2px solid var(--line);
+  background:var(--line);
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .06s ease, opacity .12s ease;
 }
 
-.primary-button:hover {
-  opacity: 0.92;
+.primary-button:hover{
+  opacity:.92;
 }
 
-.secondary-button {
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid #c5cae9;
-  background: #fff;
-  color: #555;
-  font-size: 14px;
-  font-weight: 500;
+.primary-button:active{
+  transform:translateY(1px);
+}
+
+.secondary-button{
+  padding:9px 16px;
+  border-radius:999px;
+  border:2px solid var(--line);
+  background:#fff;
+  color:var(--text);
+  font-size:14px;
+  font-weight:700;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  transition:background .12s ease, transform .06s ease;
+}
+
+.secondary-button:hover{
+  background:var(--hover);
+}
+
+.secondary-button:active{
+  transform:translateY(1px);
+}
+
+.form-checkbox{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.form-checkbox input[type="checkbox"]{
+  width:14px;
+  height:14px;
+  accent-color:var(--line);
+}
+
+@media (max-width: 900px){
+  .layout{padding:22px 18px 32px}
+  .page-title{font-size:44px}
+}
+
+@media (max-width: 640px){
+  .layout{padding:18px 14px 28px}
+  .page-title{font-size:38px}
+  .profile-section{padding:18px 16px}
+  .menu-item{padding:16px 16px}
+  .upload-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+.challenge-link {
   text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  color: inherit;
+  display: block;
 }
 
-.secondary-button:hover {
-  background: #eef0fb;
-}
-
-.form-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-  font-size: 12px;
-  color: #666;
-}
-
-.form-checkbox input[type="checkbox"] {
-  width: 14px;
-  height: 14px;
+.challenge-link:hover .challenge-card {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }

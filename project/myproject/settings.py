@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # .nev 파일 로드
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key_here")
 DEBUG = os.getenv("DEBUG", "TRUE") == "TRUE"
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]

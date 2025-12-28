@@ -61,7 +61,6 @@ class MyChallengeSerializer(serializers.ModelSerializer):
             "type",
             "category",
             "is_public",
-            "challenge_date",
             "participants_count",
             "progress",
             "is_full",
