@@ -1,17 +1,64 @@
-# app/forms.py
 from django import forms
 from django.contrib.auth.models import User
-from django.forms import ClearableFileInput
-from .models import UserProfile
+from .models import UserProfile, Challenge, Verification
 
 
-from django import forms
-from django.contrib.auth.models import User
-from .models import UserProfile
+class NicknameForm(forms.Form):
+    nickname = forms.CharField(max_length=150, label="Nickname", required=True)
+
+
+class ChallengeForm(forms.ModelForm):
+    class Meta:
+        model = Challenge
+        fields = ["title", "content", "max_member", "count", "type"]
+        widgets = {
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "챌린지 제목을 입력하세요",
+                }
+            ),
+            "content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 4,
+                    "placeholder": "어떤 챌린지인지 설명을 적어주세요",
+                }
+            ),
+            "max_member": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": 1,
+                }
+            ),
+            "count": forms.NumberInput(
+                attrs={
+                    "class": "form-control",
+                    "min": 1,
+                }
+            ),
+            "type": forms.Select(
+                attrs={
+                    "class": "form-select",
+                }
+            ),
+        }
+
+
+class VerificationForm(forms.ModelForm):
+    class Meta:
+        model = Verification
+        fields = ["image"]
+        widgets = {
+            "image": forms.ClearableFileInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+        }
 
 
 class ProfileForm(forms.ModelForm):
-    # User 모델의 username도 같이 수정할 수 있게
     username = forms.CharField(
         max_length=150,
         label="Username",
@@ -23,7 +70,6 @@ class ProfileForm(forms.ModelForm):
         ),
     )
 
-    # 프로필 이미지 삭제 여부 체크박스 (모델 필드 X, 폼용 필드)
     remove_profile_image = forms.BooleanField(
         required=False,
         label="현재 프로필 이미지 삭제",
@@ -31,7 +77,7 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ("profile_image", "bio")  # 모델 필드만 적어두면 됨
+        fields = ("profile_image", "bio")
         widgets = {
             "profile_image": forms.FileInput(
                 attrs={
@@ -51,23 +97,19 @@ class ProfileForm(forms.ModelForm):
         user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
         self.user = user
-        # 폼 처음 열 때 username 초기값 세팅
         self.fields["username"].initial = user.username
 
     def save(self, commit=True):
         profile = super().save(commit=False)
 
-        # User.username 업데이트
         self.user.username = self.cleaned_data["username"]
 
-        # 삭제 체크되어 있으면 이미지 필드 비우기
         if self.cleaned_data.get("remove_profile_image"):
-            # DB 필드만 비우는 버전 (파일까지 지우려면 delete(save=False) 쓰면 됨)
             profile.profile_image = None
 
         if commit:
             self.user.save()
-            profile.user = self.user  # 혹시 비어 있으면 연결
+            profile.user = self.user
             profile.save()
 
         return profile
