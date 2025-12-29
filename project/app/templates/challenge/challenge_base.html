@@ -22,6 +22,11 @@
       <div>
         {% if user.is_authenticated %}
           <span class="text-light me-2">{{ user.username }}님</span>
+
+          <a href="{% url 'mypage' %}" class="btn btn-sm btn-outline-light me-2">
+            마이페이지
+          </a>
+
           <a href="{% url 'user_logout' %}" class="btn btn-sm btn-outline-light">
             로그아웃
           </a>
@@ -33,6 +38,7 @@
             회원가입
           </a>
         {% endif %}
+        
       </div>
     </div>
   </nav>

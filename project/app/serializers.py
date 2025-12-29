@@ -1,15 +1,25 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import UserProfile, Challenge
-from rest_framework.permissions import IsAuthenticated
+from .models import UserProfile, Challenge, Verification
+
+
+class VerificationSerializer(serializers.ModelSerializer):
+    challenge_title = serializers.CharField(source="challenge.title", read_only=True)
+
+    class Meta:
+        model = Verification
+        fields = (
+            "id",
+            "image",
+            "date",
+            "challenge",
+            "challenge_title",
+        )
+        read_only_fields = ("id", "date", "challenge_title")
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    permission_classes = [IsAuthenticated]
-    # User 모델에서 username 끌어오기 (UserProfile에는 username 필드가 없음)
-    username = serializers.CharField(source="user.username", read_only=True)
-
-    # 모델 필드가 아니라, 계산해서 넣어주는 값
+    username = serializers.CharField(source="user.username")
     participating_count = serializers.SerializerMethodField()
 
     class Meta:
@@ -24,12 +34,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_participating_count(self, obj):
         user = obj.user
-        # Challenge.members(M2M) 기준으로 참여 중인 챌린지 수
         return user.joined_challenges.distinct().count()
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", None)
+        if user_data:
+            new_username = user_data.get("username")
+            if new_username:
+                instance.user.username = new_username
+                instance.user.save()
+        return super().update(instance, validated_data)
 
 
 class MyChallengeSerializer(serializers.ModelSerializer):
-    permission_classes = [IsAuthenticated]
     participants_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
     is_full = serializers.SerializerMethodField()
@@ -40,18 +57,16 @@ class MyChallengeSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "content",
-            "max_member",  # 정원
-            "type",  # personal / group
+            "max_member",
+            "type",
             "category",
             "is_public",
-            "challenge_date",
             "participants_count",
             "progress",
             "is_full",
         )
 
     def _get_capacity_and_count(self, obj):
-        # 정원과 현재 인원 계산 (members M2M 기반)
         capacity = obj.max_member or 0
         participants_count = obj.members.count()
         return capacity, participants_count
@@ -61,7 +76,6 @@ class MyChallengeSerializer(serializers.ModelSerializer):
         return participants_count
 
     def get_progress(self, obj):
-        # progress = 현재 인원 / 정원 * 100
         capacity, participants_count = self._get_capacity_and_count(obj)
         if capacity <= 0:
             return 0

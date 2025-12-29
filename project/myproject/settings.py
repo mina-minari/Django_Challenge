@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # .nev 파일 로드
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key_here")
 DEBUG = os.getenv("DEBUG", "TRUE") == "TRUE"
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
@@ -98,3 +98,6 @@ MEDIA_ROOT = BASE_DIR / "media"  # 실제 파일이 저장될 폴더 경로
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"

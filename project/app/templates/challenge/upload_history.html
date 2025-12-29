@@ -1,10 +1,41 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>Upload History</title>
+  <link rel="stylesheet" href="{% static 'app/style.css' %}">
 </head>
 <body>
-  <h1>Upload History</h1>
+  <div class="layout">
+    <header class="page-header">
+      <h1 class="page-title">Upload History</h1>
+      <a href="{% url 'mypage' %}" style="font-size:14px; text-decoration:none; color:#555;">
+        &lt; Back to My Page
+      </a>
+    </header>
+
+    <section class="upload-history-grid">
+      {% if verifications %}
+        <div class="upload-grid">
+          {% for v in verifications %}
+            <figure class="upload-grid-item">
+              {% if v.image %}
+                <img src="{{ v.image.url }}" alt="verification image" class="upload-grid-image">
+              {% endif %}
+              <figcaption class="upload-grid-caption">
+                <div class="upload-grid-title">{{ v.challenge.title }}</div>
+                <div class="upload-grid-date">
+                  {{ v.date|date:"Y.m.d" }}
+                </div>
+              </figcaption>
+            </figure>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p>No verification uploads yet.</p>
+      {% endif %}
+    </section>
+  </div>
 </body>
 </html>

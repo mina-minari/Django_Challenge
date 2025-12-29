@@ -1,14 +1,11 @@
 from django import forms
-from .models import Challenge, Verification
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from .models import UserProfile, Challenge, Verification
 
 
 class NicknameForm(forms.Form):
     nickname = forms.CharField(max_length=150, label="Nickname", required=True)
 
 
-# 챌린지 생성폼
 class ChallengeForm(forms.ModelForm):
     class Meta:
         model = Challenge
@@ -58,3 +55,60 @@ class VerificationForm(forms.ModelForm):
                 }
             ),
         }
+
+
+class ProfileForm(forms.ModelForm):
+    username = forms.CharField(
+        max_length=150,
+        label="Username",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-input",
+                "placeholder": "닉네임을 입력하세요",
+            }
+        ),
+    )
+
+    remove_profile_image = forms.BooleanField(
+        required=False,
+        label="현재 프로필 이미지 삭제",
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = ("profile_image", "bio")
+        widgets = {
+            "profile_image": forms.FileInput(
+                attrs={
+                    "class": "form-input",
+                }
+            ),
+            "bio": forms.Textarea(
+                attrs={
+                    "class": "form-textarea",
+                    "rows": 3,
+                    "placeholder": "간단한 소개를 적어주세요.",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop("user")
+        super().__init__(*args, **kwargs)
+        self.user = user
+        self.fields["username"].initial = user.username
+
+    def save(self, commit=True):
+        profile = super().save(commit=False)
+
+        self.user.username = self.cleaned_data["username"]
+
+        if self.cleaned_data.get("remove_profile_image"):
+            profile.profile_image = None
+
+        if commit:
+            self.user.save()
+            profile.user = self.user
+            profile.save()
+
+        return profile
