@@ -115,9 +115,10 @@ def nickname_form(request):
                 profile_image=profile_image,
             )
         except IntegrityError:
-            return HttpResponse(
-                "닉네임이 이미 사용 중입니다. 다른 닉네임을 선택해주세요.", status=400
+            messages.error(
+                request, "닉네임이 이미 사용 중입니다. 다른 닉네임을 선택해주세요."
             )
+            return redirect("nickname_form")
         login(request, user)
         return redirect("index")
     else:

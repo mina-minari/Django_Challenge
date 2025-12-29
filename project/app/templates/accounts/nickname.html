@@ -40,8 +40,13 @@
                 <form method="POST">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <p class="text-muted small text-center mb-4">서비스에서 사용하실 닉네임을 입력해주세요.</p>
-                        
+                        {% if messages %}
+                            {% for message in messages %}
+                                    <div class="alert alert-danger">🚨 경고: {{ message }} 🚨</div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted small text-center mb-4">서비스에서 사용하실 닉네임을 입력해주세요.</p>
+                        {% endif %}
                         {{ form.as_p }}
                     </div>
                     <div class="modal-footer">
