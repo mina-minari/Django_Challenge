@@ -1,0 +1,65 @@
+{% extends "challenge/challenge_base.html" %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'app/style.css' %}">
+
+<div class="mypage-root">
+  <div class="mypage-header">
+    <h1 class="mypage-title">My Page</h1>
+  </div>
+
+  <section class="mypage-card profile-section">
+    <div class="profile-avatar">
+      {% if profile.profile_image %}
+        <img src="{{ profile.profile_image.url }}" alt="프로필 이미지">
+      {% else %}
+        <img src="{% static 'app/default-profile.png' %}" alt="기본 프로필 이미지">
+      {% endif %}
+    </div>
+
+
+    <div class="profile-text">
+      <div class="name">{{ profile.user.username }}</div>
+      <div class="meta">Participating in {{ participating_count }} challenges</div>
+
+      {% if profile.bio %}
+        <div class="meta bio">{{ profile.bio }}</div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="mypage-card action-section">
+    <div class="action-card">
+      <div class="action-text">
+        <h3> 새로운 챌린지를 시작해보세요</h3>
+        <p>목표를 세우고, 꾸준함을 기록해보세요.</p>
+      </div>
+      <div class="action-button">
+        <a href="{% url 'challenge_create' %}" class="btn-create">
+          + 챌린지 생성
+        </a>
+      </div>
+    </div>
+  </section>
+  
+
+  <section class="mypage-card menu-section">
+    <div class="menu-list">
+      {% for item in menu_items %}
+        {% if item.url_name == "#" %}
+          <a href="#" class="menu-item" onclick="return false">
+            <span>{{ item.name }}</span>
+            <span class="chevron">&gt;</span>
+          </a>
+        {% else %}
+          <a href="{% url item.url_name %}" class="menu-item">
+            <span>{{ item.name }}</span>
+            <span class="chevron">&gt;</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}
