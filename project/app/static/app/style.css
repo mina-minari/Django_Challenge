@@ -399,6 +399,7 @@ body{
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
+<<<<<<< HEAD
 
 /** 챌린지 생성 css **/
 .action-section {
@@ -460,3 +461,4 @@ body{
   font-size: 0.8rem;
   text-align: center;
 }
+

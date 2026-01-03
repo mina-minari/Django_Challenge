@@ -325,7 +325,6 @@ def challenge_create(request):
             challenge.leader = request.user
             challenge.current_member = 1
             challenge.save()
-
             challenge.members.add(request.user)
             messages.success(request, "챌린지가 생성되었습니다")
             return redirect("challenge_detail", pk=challenge.pk)
@@ -338,7 +337,6 @@ def challenge_create(request):
 @login_required
 def challenge_join(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-
 
     if challenge.members.filter(id=request.user.id).exists():
         messages.info(request, "해당 챌린지에 참여중입니다.")
@@ -355,7 +353,6 @@ def challenge_join(request, pk):
 @login_required
 def verification_create(request, pk):
     challenge = get_object_or_404(Challenge, pk=pk)
-
 
     if not challenge.members.filter(id=request.user.id).exists():
         messages.error(request, "이 챌린지에 참여 중인 회원만 인증할 수 있습니다.")

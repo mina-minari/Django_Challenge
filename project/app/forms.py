@@ -112,3 +112,4 @@ class ProfileForm(forms.ModelForm):
             profile.save()
 
         return profile
+
