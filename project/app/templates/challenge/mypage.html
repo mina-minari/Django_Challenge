@@ -29,6 +29,20 @@
     </div>
   </section>
 
+  <section class="mypage-card action-section">
+    <div class="action-card">
+      <div class="action-text">
+        <h3> 새로운 챌린지를 시작해보세요</h3>
+        <p>목표를 세우고, 꾸준함을 기록해보세요.</p>
+      </div>
+      <div class="action-button">
+        <a href="{% url 'challenge_create' %}" class="btn-create">
+          + 챌린지 생성
+        </a>
+      </div>
+    </div>
+  </section>
+
   <section class="mypage-card menu-section">
     <div class="menu-list">
       {% for item in menu_items %}

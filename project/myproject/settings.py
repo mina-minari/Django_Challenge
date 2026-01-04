@@ -9,7 +9,10 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "your_secret_key_here")
 DEBUG = os.getenv("DEBUG", "TRUE") == "TRUE"
+<<<<<<< HEAD
+=======
 
+>>>>>>> upstream/main
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 LOGIN_URL = "/"
@@ -70,7 +73,11 @@ DATABASES = {
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
+<<<<<<< HEAD
+    "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+=======
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+>>>>>>> upstream/main
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
@@ -80,6 +87,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> upstream/main
 LANGUAGE_CODE = "ko-kr"  # 한국어
 TIME_ZONE = "Asia/Seoul"  # 한국 시간대
 
@@ -95,6 +106,7 @@ STATIC_URL = "/static/"
 # 업로드 이미지(인증 사진)용 MEDIA 설정
 MEDIA_URL = "/media/"  # 브라우저에서 접근할 URL prefix
 MEDIA_ROOT = BASE_DIR / "media"  # 실제 파일이 저장될 폴더 경로
+
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

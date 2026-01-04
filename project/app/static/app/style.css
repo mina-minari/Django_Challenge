@@ -399,3 +399,66 @@ body{
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
+<<<<<<< HEAD
+
+/** 챌린지 생성 css **/
+.action-section {
+  margin-top: 24px;
+}
+
+.action-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+.action-text h3 {
+  margin: 0 0 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.action-text p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.btn-create {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background-color: #ffffff;
+  color: #5a4fcf;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-create:hover {
+  background-color: #f1f1ff;
+  transform: translateY(-1px);
+}
+
+/** 인증 업로드 css**/
+.verification-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.verification-card img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.verification-card .meta {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  text-align: center;
+}
+

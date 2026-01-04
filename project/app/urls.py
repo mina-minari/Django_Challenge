@@ -18,4 +18,5 @@ urlpatterns = [
     path("api/my-challenges/", views.my_challenges_api, name="my_challenges_api"),
     path("api/upload-history/", views.upload_history_api, name="upload_history_api"),
     path("api/profile/", views.profile_api, name="profile_api"),
+
 ]
